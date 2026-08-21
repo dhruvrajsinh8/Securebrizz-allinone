@@ -1,0 +1,139 @@
+// Postgres, not SQLite: Vercel's filesystem is read-only and per-invocation
+// ephemeral. `url` is the POOLED connection (used at runtime); `directUrl` is
+// the DIRECT connection (used only by prisma migrate).
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String    @id @default(uuid())
+  name             String
+  email            String    @unique
+  password         String
+  role             String
+  avatar           String?
+  company          String?
+  plan             String
+  createdAt        DateTime  @default(now())
+  lastLogin        DateTime?
+  twoFactorEnabled Boolean   @default(false)
+  status           String    @default("active")
+  sessions         Session[]
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  device     String
+  browser    String
+  location   String
+  ip         String
+  lastActive DateTime @default(now())
+  isCurrent  Boolean  @default(false)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Vulnerabilities are created from real scan findings, scoped per user.
+model Vulnerability {
+  id             String    @id @default(uuid())
+  title          String
+  description    String
+  severity       String
+  status         String
+  cveId          String?
+  cvssScore      Float?
+  affectedAsset  String
+  discoveredAt   DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  resolvedAt     DateTime?
+  category       String
+  tags           String
+  recommendation String
+  references     String
+  assignee       String?
+  effort         String
+  impact         String
+
+  findingId   String?
+  target      String?
+  lastScanId  String?
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+  evidence    String?
+  userId      String?
+
+  @@unique([userId, target, findingId])
+  @@index([status, severity])
+  @@index([userId])
+}
+
+model ScanResult {
+  id                 String   @id @default(uuid())
+  url                String
+  scanDate           DateTime @default(now())
+  duration           Int
+  overallScore       Int
+  riskScore          Int
+  dnsSecEnabled      Boolean
+  httpsEnabled       Boolean
+  hasRobotsTxt       Boolean
+  hasSecurityTxt     Boolean
+  mixedContent       Boolean
+  weakPasswordPolicy Boolean
+  directoryListing   Boolean
+  serverInfo         String?
+  aiSummary          String
+  ssl                String
+  securityHeaders    String
+  openPorts          String
+  technologies       String
+  cookieAnalysis     String
+  outdatedLibraries  String
+  adminPagesExposed  String
+  subdomains         String?
+  recommendations    String
+
+  grade                String?
+  durationMs           Int?
+  finalUrl             String?
+  httpStatus           Int?
+  cms                  String?
+  redirectChain        String?
+  checks               String?
+  dns                  String?
+  content              String?
+  scoreBreakdown       String?
+  emailSecurity        String?
+  subresourceIntegrity String?
+  userId               String?
+
+  @@index([userId, scanDate])
+}
+
+// One row per scan attempt: the rate-limit counter and the abuse audit trail.
+model ScanAudit {
+  id        String   @id @default(uuid())
+  userId    String?
+  ip        String
+  target    String
+  createdAt DateTime @default(now())
+  outcome   String   @default("started")
+
+  @@index([userId, createdAt])
+  @@index([ip, createdAt])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  type      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

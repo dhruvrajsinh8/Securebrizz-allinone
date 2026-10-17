@@ -6,8 +6,10 @@
 
 import type { CheckDiagnostic, ScanRecommendation, ScoreComponent, Severity } from '@/types/scanner';
 
-const SEVERITY_WEIGHT: Record<Severity, number> = { critical: 25, high: 12, medium: 6, low: 2, info: 0 };
-const REPEAT_FACTORS = [1, 0.6, 0.35, 0.2];
+/** Full price for the first finding of a severity in its category. Exported so
+ *  the report can show a reader where a deduction came from. */
+export const SEVERITY_WEIGHT: Record<Severity, number> = { critical: 25, high: 12, medium: 6, low: 2, info: 0 };
+export const REPEAT_FACTORS = [1, 0.6, 0.35, 0.2];
 
 export const SEVERITY_RANK: Record<Severity, number> = { critical: 0, high: 1, medium: 2, low: 3, info: 4 };
 

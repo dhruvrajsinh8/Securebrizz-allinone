@@ -12,7 +12,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="relative w-full">
         {leftIcon && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#a1a1aa]">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6b572f]">
             {leftIcon}
           </span>
         )}
@@ -20,12 +20,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={type}
           ref={ref}
           className={cn(
-            'flex h-9 w-full rounded-md border border-[#242424] bg-[#161616] px-3 py-1 text-sm text-[#f5f5f5]',
-            'placeholder:text-[#a1a1aa]',
+            'flex h-9 w-full rounded-md border border-[#e3d2a9] bg-[#efe1c4] px-3 py-1 text-sm text-[#2a2013]',
+            'placeholder:text-[#6b572f]',
             'transition-all duration-200',
-            'focus:border-[#16a34a] focus:outline-none focus:ring-1 focus:ring-[#16a34a]/50',
+            'focus:border-[#6b7f3a] focus:outline-none focus:ring-1 focus:ring-[#6b7f3a]/50',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            error && 'border-[#dc2626] focus:border-[#dc2626] focus:ring-[#dc2626]/30',
+            error && 'border-[#a8402e] focus:border-[#a8402e] focus:ring-[#a8402e]/30',
             leftIcon && 'pl-10',
             rightIcon && 'pr-10',
             className
@@ -33,12 +33,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {rightIcon && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a1a1aa]">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b572f]">
             {rightIcon}
           </span>
         )}
         {error && (
-          <p className="mt-1 text-xs text-[#dc2626]">{error}</p>
+          <p className="mt-1 text-xs text-[#a8402e]">{error}</p>
         )}
       </div>
     );

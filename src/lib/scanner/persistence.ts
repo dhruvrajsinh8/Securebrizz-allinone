@@ -46,6 +46,7 @@ export function toScanRow(result: ScanResult) {
     scoreBreakdown: JSON.stringify(result.scoreBreakdown ?? []),
     emailSecurity: result.emailSecurity ? JSON.stringify(result.emailSecurity) : null,
     subresourceIntegrity: result.subresourceIntegrity ? JSON.stringify(result.subresourceIntegrity) : null,
+    phishing: result.phishing ? JSON.stringify(result.phishing) : null,
   };
 }
 
@@ -69,6 +70,7 @@ export function fromScanRow(row: ScanRow): ScanResult {
     content: parse(row.content, undefined),
     emailSecurity: parse(row.emailSecurity, undefined),
     subresourceIntegrity: parse(row.subresourceIntegrity, undefined),
+    phishing: parse(row.phishing, undefined),
     scanResultStatus: 'completed',
   };
 }

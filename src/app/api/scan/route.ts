@@ -30,10 +30,18 @@ export async function POST(request: Request) {
   let auditId: string | null = null;
 
   try {
-    const body = (await request.json()) as { url?: unknown };
+    const body = (await request.json()) as { url?: unknown; scanMode?: unknown; confirmedAuthorization?: unknown };
     const url = typeof body.url === 'string' ? body.url.trim() : '';
     if (!url) return NextResponse.json({ success: false, error: 'A target URL is required.' }, { status: 400 });
     if (url.length > 2048) return NextResponse.json({ success: false, error: 'Target URL is too long.' }, { status: 400 });
+
+    const scanMode = body.scanMode === 'active' ? 'active' : 'passive';
+    if (scanMode === 'active' && body.confirmedAuthorization !== true) {
+      return NextResponse.json(
+        { success: false, error: 'Active deep scan requires explicit confirmation that you own or have permission to audit this host.' },
+        { status: 400 }
+      );
+    }
 
     const limit = await checkScanRateLimit(userId, ip);
     if (!limit.allowed) {
@@ -42,19 +50,26 @@ export async function POST(request: Request) {
     }
 
     auditId = await recordScanAttempt(userId, ip, url);
-    const result = await performPassiveScan(url);
+    const result = await performPassiveScan(url, { scanMode });
 
     if (result.scanResultStatus !== 'completed') {
       await finishScanAttempt(auditId, 'failed');
       return NextResponse.json({ success: true, data: result });
     }
 
-    const stored = await prisma.scanResult.create({ data: { ...toScanRow(result), userId } });
-    const hydrated = fromScanRow(stored);
-
+    let hydrated = result;
     let sync = null;
-    try { sync = await syncFindingsToVulnerabilities(hydrated, userId); }
-    catch (syncError) { console.error('[scan] finding sync failed:', syncError); }
+    try {
+      const stored = await prisma.scanResult.create({ data: { ...toScanRow(result), userId } });
+      hydrated = fromScanRow(stored);
+      try {
+        sync = await syncFindingsToVulnerabilities(hydrated, userId);
+      } catch (syncError) {
+        console.error('[scan] finding sync failed:', syncError);
+      }
+    } catch (dbError) {
+      console.error('[scan] could not persist scan result to database:', dbError);
+    }
 
     void finishScanAttempt(auditId, 'completed');
     return NextResponse.json({ success: true, data: hydrated, sync, rateLimit: { remaining: limit.remaining } });

@@ -35,7 +35,7 @@ export const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
-        'w-full max-w-lg bg-[#0d0d0d] border border-[#242424] rounded-xl shadow-2xl',
+        'w-full max-w-lg bg-[#fffbf3] border border-[#e3d2a9] rounded-xl shadow-2xl',
         'data-[state=open]:animate-in data-[state=closed]:animate-out',
         'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
         'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
@@ -47,7 +47,7 @@ export const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 text-[#a1a1aa] hover:text-[#f5f5f5] transition-opacity">
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 text-[#6b572f] hover:text-[#2a2013] transition-opacity">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -63,7 +63,7 @@ export function DialogHeader({ className, ...props }: React.HTMLAttributes<HTMLD
 export function DialogTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <DialogPrimitive.Title
-      className={cn('text-lg font-semibold text-[#f5f5f5]', className)}
+      className={cn('text-lg font-semibold text-[#2a2013]', className)}
       {...props}
     />
   );
@@ -72,7 +72,7 @@ export function DialogTitle({ className, ...props }: React.HTMLAttributes<HTMLHe
 export function DialogDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <DialogPrimitive.Description
-      className={cn('text-sm text-[#a1a1aa]', className)}
+      className={cn('text-sm text-[#6b572f]', className)}
       {...props}
     />
   );

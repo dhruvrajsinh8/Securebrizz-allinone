@@ -11,12 +11,12 @@ import {
   Shield,
   Key,
   Smartphone,
-  CheckCircle,
-  AlertTriangle,
   Monitor,
   SmartphoneIcon,
   Trash2,
   Lock,
+  CheckCircle2,
+  AlertTriangle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -28,6 +28,7 @@ export default function SettingsTab() {
   const [profileName, setProfileName] = useState(user?.name || '');
   const [profileCompany, setProfileCompany] = useState(user?.company || '');
   const [profileEmail, setProfileEmail] = useState(user?.email || '');
+  const [resendingVerification, setResendingVerification] = useState(false);
   
   // Password state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -130,6 +131,26 @@ export default function SettingsTab() {
     }
   };
 
+  const handleResendVerification = async () => {
+    setResendingVerification(true);
+    try {
+      const res = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        toast.error(json.error ?? 'Could not send verification email.');
+      } else {
+        toast.success('Verification email sent! Check your inbox.');
+      }
+    } catch {
+      toast.error('Network error. Please try again.');
+    } finally {
+      setResendingVerification(false);
+    }
+  };
+
   const handleRevokeSession = async (sessionId: string) => {
     const previous = sessions;
     setSessions((prev) => prev.filter((s) => s.id !== sessionId));
@@ -146,9 +167,9 @@ export default function SettingsTab() {
 
   const getSessionIcon = (device: string) => {
     if (device.toLowerCase().includes('iphone') || device.toLowerCase().includes('phone') || device.toLowerCase().includes('android')) {
-      return <SmartphoneIcon className="h-5 w-5 text-[#16a34a]" />;
+      return <SmartphoneIcon className="h-5 w-5 text-[#6b7f3a]" />;
     }
-    return <Monitor className="h-5 w-5 text-[#16a34a]" />;
+    return <Monitor className="h-5 w-5 text-[#6b7f3a]" />;
   };
 
   const getStrengthBarColor = (strength: number) => {
@@ -162,7 +183,7 @@ export default function SettingsTab() {
       case 4:
         return 'strength-strong';
       default:
-        return 'bg-[#161616]';
+        return 'bg-[#efe1c4]';
     }
   };
 
@@ -185,8 +206,8 @@ export default function SettingsTab() {
     <div className="space-y-6 font-sans">
       {/* Title */}
       <div>
-        <h2 className="text-xl font-bold text-[#f5f5f5]">Control Settings</h2>
-        <p className="text-xs text-[#a1a1aa] mt-1">
+        <h2 className="text-xl font-bold text-[#2a2013]">Control Settings</h2>
+        <p className="text-xs text-[#6b572f] mt-1">
           Manage station profile details, system passphrases, 2FA guard rails, and active sessions
         </p>
       </div>
@@ -196,46 +217,67 @@ export default function SettingsTab() {
         <Card variant="cyber">
           <CardHeader>
             <CardTitle className="flex items-center gap-1.5">
-              <User className="h-4.5 w-4.5 text-[#16a34a]" /> Profile Configuration
+              <User className="h-4.5 w-4.5 text-[#6b7f3a]" /> Profile Configuration
             </CardTitle>
             <CardDescription>Update your analyst credentials and organization details</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wider text-[#a1a1aa]">
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#6b572f]">
                   Handler Name
                 </label>
                 <Input
                   type="text"
                   value={profileName}
                   onChange={(e) => setProfileName(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#242424] focus:border-[#16a34a] text-[#f5f5f5] text-xs h-9"
+                  className="bg-[#fffbf3] border-[#e3d2a9] focus:border-[#6b7f3a] text-[#2a2013] text-xs h-9"
                   required
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wider text-[#a1a1aa]">
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#6b572f]">
                   Corporate Org
                 </label>
                 <Input
                   type="text"
                   value={profileCompany}
                   onChange={(e) => setProfileCompany(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#242424] focus:border-[#16a34a] text-[#f5f5f5] text-xs h-9"
+                  className="bg-[#fffbf3] border-[#e3d2a9] focus:border-[#6b7f3a] text-[#2a2013] text-xs h-9"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wider text-[#a1a1aa]">
-                  Linked Email
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#6b572f]">
+                    Linked Email
+                  </label>
+                  {user?.emailVerified ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#47601f] bg-[#7f9548]/15 px-2 py-0.5 rounded border border-[#7f9548]/30">
+                      <CheckCircle2 className="w-3 h-3 text-[#47601f]" /> Verified
+                    </span>
+                  ) : (
+                    <div className="flex items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#7a4a1a] bg-[#f6ebd3] px-2 py-0.5 rounded border border-[#9a721a]/30">
+                        <AlertTriangle className="w-3 h-3 text-[#9a721a]" /> Unverified
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleResendVerification}
+                        disabled={resendingVerification}
+                        className="text-[11px] text-[#47601f] hover:underline font-medium cursor-pointer disabled:opacity-50"
+                      >
+                        {resendingVerification ? 'Sending...' : 'Resend'}
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <Input
                   type="email"
                   value={profileEmail}
                   onChange={(e) => setProfileEmail(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#242424] focus:border-[#16a34a] text-[#f5f5f5] text-xs h-9"
+                  className="bg-[#fffbf3] border-[#e3d2a9] focus:border-[#6b7f3a] text-[#2a2013] text-xs h-9"
                   required
                 />
               </div>
@@ -244,7 +286,7 @@ export default function SettingsTab() {
                 type="submit"
                 variant="default"
                 size="sm"
-                className="w-full text-2xs uppercase tracking-wider font-semibold shadow-[0_0_10px_rgba(34, 197, 94,0.1)] cursor-pointer"
+                className="w-full text-2xs uppercase tracking-wider font-semibold shadow-[0_0_10px_rgba(107, 127, 58,0.1)] cursor-pointer"
               >
                 Commit Profile Changes
               </Button>
@@ -256,14 +298,14 @@ export default function SettingsTab() {
         <Card variant="cyber">
           <CardHeader>
             <CardTitle className="flex items-center gap-1.5">
-              <Key className="h-4.5 w-4.5 text-[#16a34a]" /> Change Passphrase
+              <Key className="h-4.5 w-4.5 text-[#6b7f3a]" /> Change Passphrase
             </CardTitle>
             <CardDescription>Keep access keys secure by rotating passwords regularly</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleUpdatePassword} className="space-y-3.5">
               <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wider text-[#a1a1aa]">
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#6b572f]">
                   Current Access Pass
                 </label>
                 <Input
@@ -271,13 +313,13 @@ export default function SettingsTab() {
                   placeholder="••••••••"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#242424] focus:border-[#16a34a] text-[#f5f5f5] text-xs h-9"
+                  className="bg-[#fffbf3] border-[#e3d2a9] focus:border-[#6b7f3a] text-[#2a2013] text-xs h-9"
                   required
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wider text-[#a1a1aa]">
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#6b572f]">
                   New Passphrase Key
                 </label>
                 <Input
@@ -285,12 +327,12 @@ export default function SettingsTab() {
                   placeholder="••••••••"
                   value={newPassword}
                   onChange={(e) => handlePasswordStrengthCheck(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#242424] focus:border-[#16a34a] text-[#f5f5f5] text-xs h-9"
+                  className="bg-[#fffbf3] border-[#e3d2a9] focus:border-[#6b7f3a] text-[#2a2013] text-xs h-9"
                   required
                 />
                 {newPassword && (
                   <div className="space-y-1 pt-1.5">
-                    <div className="flex justify-between items-center text-[10px] font-semibold text-[#a1a1aa]">
+                    <div className="flex justify-between items-center text-xs font-semibold text-[#6b572f]">
                       <span>Strength: {getStrengthText(passwordStrength)}</span>
                     </div>
                     {/* Strength bars */}
@@ -300,7 +342,7 @@ export default function SettingsTab() {
                           key={i}
                           className={cn(
                             "h-full rounded-sm transition-all duration-300",
-                            passwordStrength >= i ? getStrengthBarColor(passwordStrength) : "bg-[#161616]"
+                            passwordStrength >= i ? getStrengthBarColor(passwordStrength) : "bg-[#efe1c4]"
                           )}
                         />
                       ))}
@@ -310,7 +352,7 @@ export default function SettingsTab() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wider text-[#a1a1aa]">
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#6b572f]">
                   Confirm Passphrase Key
                 </label>
                 <Input
@@ -318,7 +360,7 @@ export default function SettingsTab() {
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#242424] focus:border-[#16a34a] text-[#f5f5f5] text-xs h-9"
+                  className="bg-[#fffbf3] border-[#e3d2a9] focus:border-[#6b7f3a] text-[#2a2013] text-xs h-9"
                   required
                 />
               </div>
@@ -342,17 +384,17 @@ export default function SettingsTab() {
           <div>
             <CardHeader>
               <CardTitle className="flex items-center gap-1.5">
-                <Smartphone className="h-4.5 w-4.5 text-[#22c55e]" /> Multi-Factor Verification
+                <Smartphone className="h-4.5 w-4.5 text-[#7f9548]" /> Multi-Factor Verification
               </CardTitle>
               <CardDescription>Enable 2FA prompts to secure account connections</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between bg-[#0a0a0a] border border-[#242424]/50 p-4 rounded-lg">
+              <div className="flex items-center justify-between bg-[#fffbf3] border border-[#e3d2a9]/50 p-4 rounded-lg">
                 <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-[#f5f5f5]">
+                  <h4 className="text-xs font-bold text-[#2a2013]">
                     TOTP Google / Duo Authentication
                   </h4>
-                  <p className="text-[11px] text-[#a1a1aa] max-w-xs leading-relaxed">
+                  <p className="text-sm text-[#6b572f] max-w-xs leading-relaxed">
                     Access sessions must pass token confirmations on registered auth hardware.
                   </p>
                 </div>
@@ -360,9 +402,12 @@ export default function SettingsTab() {
                 <button
                   type="button"
                   onClick={handleToggle2FA}
+                  role="switch"
+                  aria-checked={is2FAEnabled}
+                  aria-label="Two-factor authentication"
                   className={cn(
-                    "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none",
-                    is2FAEnabled ? "bg-[#22c55e]" : "bg-[#161616]"
+                    "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out",
+                    is2FAEnabled ? "bg-[#7f9548]" : "bg-[#efe1c4]"
                   )}
                 >
                   <span
@@ -375,9 +420,9 @@ export default function SettingsTab() {
               </div>
             </CardContent>
           </div>
-          <CardFooter className="pt-0 pb-6 text-3xs text-[#a1a1aa] border-t border-[#242424]/25 pt-4">
+          <CardFooter className="pt-0 pb-6 text-3xs text-[#6b572f] border-t border-[#e3d2a9]/25 pt-4">
             <span className="flex items-center gap-1">
-              <Lock className="h-3.5 w-3.5 text-[#22c55e]" /> Profile is currently guarded in compliance with Enterprise policies.
+              <Lock className="h-3.5 w-3.5 text-[#7f9548]" /> Profile is currently guarded in compliance with Enterprise policies.
             </span>
           </CardFooter>
         </Card>
@@ -386,27 +431,27 @@ export default function SettingsTab() {
         <Card variant="cyber">
           <CardHeader>
             <CardTitle className="flex items-center gap-1.5">
-              <Shield className="h-4.5 w-4.5 text-[#dc2626]" /> Active Terminal Sessions
+              <Shield className="h-4.5 w-4.5 text-[#a8402e]" /> Active Terminal Sessions
             </CardTitle>
             <CardDescription>Inspect and manage active device access handles</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 pr-1 max-h-[220px] overflow-y-auto divide-y divide-[#242424]/35">
+          <CardContent className="space-y-4 pr-1 max-h-[220px] overflow-y-auto divide-y divide-[#e3d2a9]/35">
             {sessions.map((session) => (
               <div key={session.id} className="flex justify-between items-center py-3 first:pt-0 group">
                 <div className="flex gap-3 items-center">
-                  <div className="p-2 bg-[#161616] border border-[#242424] rounded-lg">
+                  <div className="p-2 bg-[#efe1c4] border border-[#e3d2a9] rounded-lg">
                     {getSessionIcon(session.device)}
                   </div>
                   <div className="space-y-0.5 text-xs">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-bold text-[#f5f5f5]">{session.device}</span>
+                      <span className="font-bold text-[#2a2013]">{session.device}</span>
                       {session.isCurrent && (
-                        <span className="text-[9px] uppercase tracking-wider bg-[#22c55e]/15 border border-[#22c55e]/35 text-[#22c55e] font-bold px-1.5 py-0.2 rounded-full">
+                        <span className="text-xs uppercase tracking-wider bg-[#7f9548]/15 border border-[#7f9548]/35 text-[#7f9548] font-bold px-1.5 py-0.2 rounded-full">
                           Current
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-[#a1a1aa]">
+                    <p className="text-xs text-[#6b572f]">
                       {session.browser} • {session.location} • {session.ip}
                     </p>
                   </div>
@@ -414,7 +459,7 @@ export default function SettingsTab() {
                 {!session.isCurrent && (
                   <button
                     onClick={() => handleRevokeSession(session.id)}
-                    className="p-1.5 rounded-lg text-[#a1a1aa] hover:text-[#dc2626] hover:bg-[#dc2626]/15 transition-all cursor-pointer opacity-0 group-hover:opacity-100 focus:opacity-100"
+                    className="p-1.5 rounded-lg text-[#6b572f] hover:text-[#a8402e] hover:bg-[#a8402e]/15 transition-all cursor-pointer opacity-0 group-hover:opacity-100 focus:opacity-100"
                     title="Terminate session"
                   >
                     <Trash2 className="h-4 w-4" />

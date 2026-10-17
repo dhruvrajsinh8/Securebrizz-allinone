@@ -19,10 +19,15 @@ import { ALLOW_LOCAL_SCAN, DEFAULT_TIMEOUT_MS, LOCAL_TIMEOUT_MS, guardTarget, is
 import { buildSummary, scoreFindings, sortFindings } from './scoring';
 import { inspectCertificate, notApplicableCertificate, unknownCertificate } from './tls';
 import { fetchSubdomains, inspectWellKnown } from './wellknown';
+import { assessPhishing } from './phishing';
+import { scanAuditPorts, portFindings } from './ports';
+import { correlateCves } from './cve';
 
 export interface ScanOptions {
   /** Certificate-transparency subdomain discovery is slow; off by default. */
   includeSubdomains?: boolean;
+  /** 'passive' = zero-payload browser-like requests; 'active' = authorized TCP port audit & CVE correlation. */
+  scanMode?: 'passive' | 'active';
 }
 
 export async function performPassiveScan(inputUrl: string, options: ScanOptions = {}): Promise<ScanResult> {
@@ -121,6 +126,43 @@ export async function performPassiveScan(inputUrl: string, options: ScanOptions 
   const fingerprintResult = fingerprint({ headers: response.headers, html: response.body, scriptUrls: contentResult.externalScriptUrls, cookieNames: cookieResult.cookies.map((cookie) => cookie.name), generator: contentResult.content.generator });
   track('fingerprint', 'Technology fingerprint', 'ok', fingerprintResult.technologies.length === 0 ? 'No technologies positively identified.' : fingerprintResult.technologies.map((tech) => `${tech.name}${tech.version ? ` ${tech.version}` : ''}`).join(', '));
 
+  const isActive = options.scanMode === 'active';
+  const activeFindings: ScanRecommendation[] = [];
+  let openPorts: Port[] = [];
+
+  const observedPort = finalParsed.port ? parseInt(finalParsed.port, 10) : isHttps ? 443 : 80;
+  const webPort: Port = {
+    number: observedPort,
+    service: isHttps ? 'HTTPS / TLS' : 'HTTP',
+    protocol: 'tcp',
+    state: 'open',
+    risk: isHttps ? 'info' : 'medium',
+    description: isHttps ? `Encrypted web service answered on port ${observedPort}.` : `Unencrypted web service answered on port ${observedPort}.`,
+    evidence: `HTTP ${response.status} response received from ${finalUrl}`,
+  };
+
+  if (isActive) {
+    const portStarted = Date.now();
+    const probed = await scanAuditPorts(hostname);
+    if (!probed.some((p) => p.number === observedPort)) {
+      probed.push(webPort);
+      probed.sort((a, b) => a.number - b.number);
+    }
+    openPorts = probed;
+    activeFindings.push(...portFindings(openPorts, hostname));
+    track('ports', 'TCP Port Audit', 'ok', `${openPorts.length} open port(s) detected across top common services`, Date.now() - portStarted);
+
+    const cveStarted = Date.now();
+    const cveResult = await correlateCves(fingerprintResult.technologies);
+    fingerprintResult.technologies = cveResult.technologies;
+    activeFindings.push(...cveResult.findings);
+    track('cve', 'CVE & Vulnerability Correlation', 'ok', `${cveResult.findings.length} advisory/CVE finding(s) matched`, Date.now() - cveStarted);
+  } else {
+    openPorts = [webPort];
+    track('ports', 'TCP Port Audit', 'skipped', 'Passive mode: deep port scan omitted.');
+    track('cve', 'CVE & Vulnerability Correlation', 'skipped', 'Passive mode: active CVE correlation omitted.');
+  }
+
   const findings: ScanRecommendation[] = [
     ...transportFindings({ cert, isHttps, hostname, finalUrl, redirectsToHttps }),
     ...headerResult.findings,
@@ -129,14 +171,16 @@ export async function performPassiveScan(inputUrl: string, options: ScanOptions 
     ...fingerprintResult.findings,
     ...wellKnown.findings,
     ...(isLocal ? [] : dnsFindings({ dns, hostname, failures: dnsFailures })),
+    ...activeFindings,
   ];
 
   const ordered = sortFindings(findings);
   const { score, riskScore, grade, breakdown } = scoreFindings(ordered);
   const durationMs = Date.now() - started;
 
-  const observedPort = finalParsed.port ? parseInt(finalParsed.port, 10) : isHttps ? 443 : 80;
-  const openPorts: Port[] = [{ number: observedPort, service: isHttps ? 'HTTPS / TLS' : 'HTTP', protocol: 'tcp', state: 'open', risk: isHttps ? 'info' : 'medium', description: isHttps ? `Encrypted web service answered on port ${observedPort}.` : `Unencrypted web service answered on port ${observedPort}.`, evidence: `HTTP ${response.status} response received from ${finalUrl}` }];
+  const phishingStarted = Date.now();
+  const phishing = assessPhishing({ hostname, finalUrl, html: response.body, isHttps, cert, hasLoginForm: contentResult.content.passwordFieldCount > 0 });
+  track('phishing', 'Phishing / spoofing check', 'ok', `${phishing.verdict.replace('_', ' ')} (risk ${phishing.riskScore}/100)`, Date.now() - phishingStarted);
 
   const serverInfo = [response.headers['server'], response.headers['x-powered-by'], guard.addresses[0] ? `IP: ${guard.addresses[0]}` : ''].filter(Boolean).join(' | ') || (isLocal ? 'Local development server' : 'No server banner disclosed');
 
@@ -151,7 +195,7 @@ export async function performPassiveScan(inputUrl: string, options: ScanOptions 
     weakPasswordPolicy: contentResult.content.passwordFieldCount > 0 && !isHttps, adminPagesExposed: wellKnown.disclosedPaths, directoryListing: contentResult.content.directoryListing, serverInfo,
     aiSummary: buildSummary({ hostname, findings: ordered, score, grade, checks, durationMs }),
     subdomains: ct.subdomains, recommendations: ordered, emailSecurity: buildEmailSecurity(dns, !isLocal && !dnsFailures['dns.txt']), subresourceIntegrity: contentResult.sri,
-    dns: isLocal ? undefined : dns, content: contentResult.content, checks, scoreBreakdown: breakdown,
+    dns: isLocal ? undefined : dns, content: contentResult.content, checks, scoreBreakdown: breakdown, phishing, scanMode: options.scanMode ?? 'passive',
   };
 }
 

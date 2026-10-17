@@ -56,10 +56,10 @@ export function capitalize(str: string): string {
 }
 
 export function getRiskColor(score: number): string {
-  if (score >= 80) return '#22c55e';
-  if (score >= 60) return '#16a34a';
-  if (score >= 40) return '#a1a1aa';
-  return '#dc2626';
+  if (score >= 80) return '#7f9548';
+  if (score >= 60) return '#6b7f3a';
+  if (score >= 40) return '#6b572f';
+  return '#a8402e';
 }
 
 export function getRiskLabel(score: number): string {
@@ -71,11 +71,11 @@ export function getRiskLabel(score: number): string {
 
 export function getSeverityColor(severity: string): string {
   switch (severity.toLowerCase()) {
-    case 'critical': return '#f87171';
-    case 'high': return '#d4d4d8';
-    case 'medium': return '#4ade80';
-    case 'low': return '#22c55e';
-    default: return '#a1a1aa';
+    case 'critical': return '#8a3122';
+    case 'high': return '#4a3b1f';
+    case 'medium': return '#47601f';
+    case 'low': return '#7f9548';
+    default: return '#6b572f';
   }
 }
 

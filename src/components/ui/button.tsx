@@ -10,8 +10,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 const variantClasses = {
   default: 'bg-green-600 text-white hover:bg-green-500 active:bg-green-700',
   destructive: 'bg-red-600 text-white hover:bg-red-500',
-  outline: 'border border-[#242424] bg-transparent text-[#f5f5f5] hover:bg-[#161616] hover:border-[#333333]',
-  ghost: 'bg-transparent text-[#f5f5f5] hover:bg-[#161616]',
+  outline: 'border border-[#e3d2a9] bg-transparent text-[#2a2013] hover:bg-[#efe1c4] hover:border-[#cbae72]',
+  ghost: 'bg-transparent text-[#2a2013] hover:bg-[#efe1c4]',
   link: 'bg-transparent text-green-400 underline-offset-4 hover:underline',
   cyber: 'border border-green-600/30 bg-green-600/10 text-green-400 hover:bg-green-600/20 hover:border-green-500/50',
   success: 'bg-green-600 text-white hover:bg-green-500',

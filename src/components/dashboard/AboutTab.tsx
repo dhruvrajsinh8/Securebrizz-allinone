@@ -81,52 +81,52 @@ export default function AboutTab() {
   return (
     <div className="space-y-4 max-w-5xl">
       <div>
-        <h1 className="text-base font-semibold text-[#f5f5f5]">About SecureBiz</h1>
-        <p className="text-xs text-[#71717a] mt-0.5">A passive web security scanner, and the team that built it.</p>
+        <h1 className="text-base font-semibold text-[#2a2013]">About SecureBiz</h1>
+        <p className="text-xs text-[#937d57] mt-0.5">A passive web security scanner, and the team that built it.</p>
       </div>
 
-      <div className="border border-[#242424] bg-[#0d0d0d] rounded-lg p-5">
+      <div className="border border-[#e3d2a9] bg-[#fffbf3] rounded-lg p-5">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-md bg-[#22c55e]/10 border border-[#22c55e]/25 flex items-center justify-center shrink-0"><Shield className="h-4 w-4 text-[#4ade80]" /></div>
+          <div className="w-9 h-9 rounded-md bg-[#7f9548]/10 border border-[#7f9548]/25 flex items-center justify-center shrink-0"><Shield className="h-4 w-4 text-[#47601f]" /></div>
           <div className="space-y-2">
-            <h2 className="text-sm font-semibold text-[#f5f5f5]">What this project does</h2>
-            <p className="text-xs text-[#a1a1aa] leading-relaxed">SecureBiz assesses the security posture of a website from the outside, using only what any ordinary visitor can observe: the pages it serves, the certificate it presents, and the DNS records it publishes. It produces findings with the evidence that produced them, the consequence of leaving them, and the exact configuration change that fixes them.</p>
-            <p className="text-xs text-[#a1a1aa] leading-relaxed">Every result is measured. When a check cannot complete, it is reported as failed rather than converted into a finding or a score penalty — because “we could not check” is a different statement from “you are secure”, and conflating the two is how scanners mislead the people relying on them.</p>
+            <h2 className="text-sm font-semibold text-[#2a2013]">What this project does</h2>
+            <p className="text-xs text-[#6b572f] leading-relaxed">SecureBiz assesses the security posture of a website from the outside, using only what any ordinary visitor can observe: the pages it serves, the certificate it presents, and the DNS records it publishes. It produces findings with the evidence that produced them, the consequence of leaving them, and the exact configuration change that fixes them.</p>
+            <p className="text-xs text-[#6b572f] leading-relaxed">Every result is measured. When a check cannot complete, it is reported as failed rather than converted into a finding or a score penalty — because “we could not check” is a different statement from “you are secure”, and conflating the two is how scanners mislead the people relying on them.</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="border border-[#242424] bg-[#0d0d0d] rounded-lg p-4">
-          <h3 className="text-xs font-semibold text-[#4ade80] uppercase tracking-wider mb-3">What it checks</h3>
-          <ul className="space-y-2">{DOES.map((item) => <li key={item} className="flex items-start gap-2"><Check className="h-3.5 w-3.5 text-[#4ade80] shrink-0 mt-0.5" /><span className="text-[11px] text-[#a1a1aa] leading-relaxed">{item}</span></li>)}</ul>
+        <div className="border border-[#e3d2a9] bg-[#fffbf3] rounded-lg p-4">
+          <h3 className="text-xs font-semibold text-[#47601f] uppercase tracking-wider mb-3">What it checks</h3>
+          <ul className="space-y-2">{DOES.map((item) => <li key={item} className="flex items-start gap-2"><Check className="h-3.5 w-3.5 text-[#47601f] shrink-0 mt-0.5" /><span className="text-sm text-[#6b572f] leading-relaxed">{item}</span></li>)}</ul>
         </div>
-        <div className="border border-[#242424] bg-[#0d0d0d] rounded-lg p-4">
-          <h3 className="text-xs font-semibold text-[#f87171] uppercase tracking-wider mb-3">What it does not do</h3>
-          <ul className="space-y-2">{DOES_NOT.map((item) => <li key={item} className="flex items-start gap-2"><X className="h-3.5 w-3.5 text-[#f87171] shrink-0 mt-0.5" /><span className="text-[11px] text-[#a1a1aa] leading-relaxed">{item}</span></li>)}</ul>
+        <div className="border border-[#e3d2a9] bg-[#fffbf3] rounded-lg p-4">
+          <h3 className="text-xs font-semibold text-[#8a3122] uppercase tracking-wider mb-3">What it does not do</h3>
+          <ul className="space-y-2">{DOES_NOT.map((item) => <li key={item} className="flex items-start gap-2"><X className="h-3.5 w-3.5 text-[#8a3122] shrink-0 mt-0.5" /><span className="text-sm text-[#6b572f] leading-relaxed">{item}</span></li>)}</ul>
         </div>
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-[#f5f5f5] mb-3">The team</h2>
+        <h2 className="text-sm font-semibold text-[#2a2013] mb-3">The team</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {TEAM.map((member) => (
-            <div key={member.role} className="border border-[#242424] bg-[#0d0d0d] rounded-lg p-4 hover:border-[#333333] transition-colors">
+            <div key={member.role} className="border border-[#e3d2a9] bg-[#fffbf3] rounded-lg p-4 hover:border-[#cbae72] transition-colors">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#161616] border border-[#242424] flex items-center justify-center text-xs font-bold text-[#4ade80] shrink-0 uppercase">{member.name.charAt(0)}</div>
-                <div className="min-w-0"><p className="text-sm font-semibold text-[#f5f5f5] truncate">{member.name}</p><p className="text-[11px] text-[#4ade80]">{member.role}</p></div>
+                <div className="w-9 h-9 rounded-full bg-[#efe1c4] border border-[#e3d2a9] flex items-center justify-center text-xs font-bold text-[#47601f] shrink-0 uppercase">{member.name.charAt(0)}</div>
+                <div className="min-w-0"><p className="text-sm font-semibold text-[#2a2013] truncate">{member.name}</p><p className="text-sm text-[#47601f]">{member.role}</p></div>
               </div>
-              <p className="text-[11px] text-[#71717a] mt-2.5 mb-2">{member.focus}</p>
-              <ul className="space-y-1">{member.contributions.map((item) => <li key={item} className="flex items-start gap-1.5"><span className="text-[#52525b] mt-1.5 h-1 w-1 rounded-full bg-[#52525b] shrink-0" /><span className="text-[11px] text-[#a1a1aa] leading-relaxed">{item}</span></li>)}</ul>
+              <p className="text-sm text-[#937d57] mt-2.5 mb-2">{member.focus}</p>
+              <ul className="space-y-1">{member.contributions.map((item) => <li key={item} className="flex items-start gap-1.5"><span className="text-[#a6906a] mt-1.5 h-1 w-1 rounded-full bg-[#a6906a] shrink-0" /><span className="text-sm text-[#6b572f] leading-relaxed">{item}</span></li>)}</ul>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="border border-[#242424] bg-[#0d0d0d] rounded-lg p-4">
-        <h3 className="text-xs font-semibold text-[#f5f5f5] uppercase tracking-wider mb-2">Known limitations</h3>
-        <ul className="space-y-1.5 text-[11px] text-[#a1a1aa] leading-relaxed">
-          <li>• Library vulnerability data comes from a bundled table current as of <span className="font-mono text-[#d4d4d8]">{VULN_DB_AS_OF}</span>, not a live CVE feed. A newly published advisory will not be detected.</li>
+      <div className="border border-[#e3d2a9] bg-[#fffbf3] rounded-lg p-4">
+        <h3 className="text-xs font-semibold text-[#2a2013] uppercase tracking-wider mb-2">Known limitations</h3>
+        <ul className="space-y-1.5 text-sm text-[#6b572f] leading-relaxed">
+          <li>• Library vulnerability data comes from a bundled table current as of <span className="font-mono text-[#4a3b1f]">{VULN_DB_AS_OF}</span>, not a live CVE feed. A newly published advisory will not be detected.</li>
           <li>• Only the page at the scanned URL is analysed. Headers frequently differ on other routes, so a clean homepage does not guarantee a clean login page.</li>
           <li>• Scores are comparative, not absolute. A grade A means no issues were found by these checks — not that the site is secure.</li>
           <li>• Subdomain discovery depends on Certificate Transparency logs, so hosts that never had a public certificate will not appear.</li>

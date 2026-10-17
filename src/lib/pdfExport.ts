@@ -11,18 +11,18 @@ function esc(value: unknown): string {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 85) return '#15803d';
-  if (score >= 65) return '#57534e';
-  return '#b91c1c';
+  if (score >= 85) return '#3a4e19';
+  if (score >= 65) return '#7c6842';
+  return '#7a2a1c';
 }
 
 function severityStyle(severity: string): string {
   switch (severity) {
-    case 'critical': return 'background:#b91c1c;color:#ffffff;';
-    case 'high': return 'background:#fee2e2;color:#991b1b;border:1px solid #fecaca;';
-    case 'medium': return 'background:#f4f4f5;color:#3f3f46;border:1px solid #e4e4e7;';
-    case 'low': return 'background:#fafafa;color:#71717a;border:1px solid #e4e4e7;';
-    default: return 'background:#fafafa;color:#a1a1aa;border:1px solid #f4f4f5;';
+    case 'critical': return 'background:#7a2a1c;color:#fffbf3;';
+    case 'high': return 'background:#f1dfcf;color:#5c2015;border:1px solid #e3b79e;';
+    case 'medium': return 'background:#f6efe1;color:#4a3b1f;border:1px solid #e3d2a9;';
+    case 'low': return 'background:#fffbf3;color:#937d57;border:1px solid #e3d2a9;';
+    default: return 'background:#fffbf3;color:#6b572f;border:1px solid #f6efe1;';
   }
 }
 
@@ -76,37 +76,37 @@ export function exportScanReportPDF(scanResult: ScanResult): void {
 <html lang="en"><head><meta charset="utf-8" /><title>Security report — ${esc(scanResult.finalUrl ?? scanResult.url)}</title>
 <style>
 @page { size: A4; margin: 16mm; } * { box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #18181b; background: #ffffff; margin: 0; font-size: 12px; line-height: 1.55; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #2a2013; background: #fffbf3; margin: 0; font-size: 12px; line-height: 1.55; }
 .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; } .small { font-size: 10.5px; }
-header.doc { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #18181b; padding-bottom: 10px; margin-bottom: 18px; }
-.brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; } .brand em { font-style: normal; color: #15803d; }
-.doc-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #71717a; }
+header.doc { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #2a2013; padding-bottom: 10px; margin-bottom: 18px; }
+.brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; } .brand em { font-style: normal; color: #3a4e19; }
+.doc-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #937d57; }
 .meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 18px; margin-bottom: 18px; }
-.meta div strong { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: #a1a1aa; font-weight: 600; margin-bottom: 1px; }
+.meta div strong { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: #6b572f; font-weight: 600; margin-bottom: 1px; }
 .meta div span { word-break: break-all; }
-.summary { display: flex; gap: 18px; align-items: center; border: 1px solid #e4e4e7; border-radius: 6px; padding: 14px 16px; margin-bottom: 8px; }
-.score { font-size: 34px; font-weight: 700; line-height: 1; color: ${scoreColor(scanResult.overallScore)}; } .score small { display: block; font-size: 10px; color: #a1a1aa; font-weight: 500; }
-.grade { font-size: 15px; font-weight: 700; padding: 3px 9px; border: 1px solid #d4d4d8; border-radius: 4px; }
+.summary { display: flex; gap: 18px; align-items: center; border: 1px solid #e3d2a9; border-radius: 6px; padding: 14px 16px; margin-bottom: 8px; }
+.score { font-size: 34px; font-weight: 700; line-height: 1; color: ${scoreColor(scanResult.overallScore)}; } .score small { display: block; font-size: 10px; color: #6b572f; font-weight: 500; }
+.grade { font-size: 15px; font-weight: 700; padding: 3px 9px; border: 1px solid #4a3b1f; border-radius: 4px; }
 .counts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; } .count { font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 700; text-transform: uppercase; }
-.note { border-left: 3px solid #d4d4d8; padding: 8px 12px; background: #fafafa; margin: 14px 0 20px; font-size: 11.5px; } .note.warn { border-left-color: #b91c1c; background: #fef2f2; }
-h2.section { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #52525b; border-bottom: 1px solid #e4e4e7; padding-bottom: 5px; margin: 22px 0 10px; }
-.finding { border: 1px solid #e4e4e7; border-radius: 6px; padding: 12px 14px; margin-bottom: 10px; page-break-inside: avoid; } .finding.is-resolved { opacity: 0.55; }
+.note { border-left: 3px solid #4a3b1f; padding: 8px 12px; background: #fffbf3; margin: 14px 0 20px; font-size: 11.5px; } .note.warn { border-left-color: #7a2a1c; background: #f7eee1; }
+h2.section { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #a6906a; border-bottom: 1px solid #e3d2a9; padding-bottom: 5px; margin: 22px 0 10px; }
+.finding { border: 1px solid #e3d2a9; border-radius: 6px; padding: 12px 14px; margin-bottom: 10px; page-break-inside: avoid; } .finding.is-resolved { opacity: 0.55; }
 .finding-head { display: flex; align-items: baseline; gap: 8px; } .finding-head h3 { font-size: 13px; margin: 0; font-weight: 650; }
 .sev { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 6px; border-radius: 3px; }
-.desc { margin: 6px 0 0; color: #3f3f46; } .body { margin: 3px 0 0; color: #3f3f46; }
-.sub { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: #a1a1aa; font-weight: 600; margin-top: 10px; }
-.tags { margin-top: 7px; display: flex; gap: 5px; flex-wrap: wrap; } .tag { font-size: 9px; padding: 2px 6px; background: #f4f4f5; border-radius: 3px; color: #52525b; } .tag.resolved { background: #dcfce7; color: #15803d; }
+.desc { margin: 6px 0 0; color: #4a3b1f; } .body { margin: 3px 0 0; color: #4a3b1f; }
+.sub { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: #6b572f; font-weight: 600; margin-top: 10px; }
+.tags { margin-top: 7px; display: flex; gap: 5px; flex-wrap: wrap; } .tag { font-size: 9px; padding: 2px 6px; background: #f6efe1; border-radius: 3px; color: #a6906a; } .tag.resolved { background: #e4eacb; color: #3a4e19; }
 table { width: 100%; border-collapse: collapse; margin-top: 4px; } table.ev td { padding: 3px 0; vertical-align: top; }
-.ev-label { width: 150px; color: #a1a1aa; font-size: 10.5px; font-family: ui-monospace, monospace; } .ev-value { font-family: ui-monospace, monospace; font-size: 10.5px; word-break: break-all; }
-table.grid { border: 1px solid #e4e4e7; } table.grid th, table.grid td { border-bottom: 1px solid #f4f4f5; padding: 5px 8px; text-align: left; vertical-align: top; }
-table.grid th { background: #fafafa; font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; }
+.ev-label { width: 150px; color: #6b572f; font-size: 10.5px; font-family: ui-monospace, monospace; } .ev-value { font-family: ui-monospace, monospace; font-size: 10.5px; word-break: break-all; }
+table.grid { border: 1px solid #e3d2a9; } table.grid th, table.grid td { border-bottom: 1px solid #f6efe1; padding: 5px 8px; text-align: left; vertical-align: top; }
+table.grid th { background: #fffbf3; font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #937d57; }
 .status { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 1px 5px; border-radius: 3px; }
-.status-ok, .status-present, .status-valid { background: #dcfce7; color: #15803d; } .status-failed, .status-missing, .status-invalid, .status-expired { background: #fee2e2; color: #991b1b; }
-.status-misconfigured, .status-expiring_soon { background: #ffedd5; color: #9a3412; } .status-skipped, .status-unknown, .status-not_applicable { background: #f4f4f5; color: #71717a; }
-.snippet { border: 1px solid #e4e4e7; border-radius: 4px; margin-top: 5px; overflow: hidden; } .snippet-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; background: #fafafa; padding: 3px 8px; border-bottom: 1px solid #e4e4e7; }
+.status-ok, .status-present, .status-valid { background: #e4eacb; color: #3a4e19; } .status-failed, .status-missing, .status-invalid, .status-expired { background: #f1dfcf; color: #5c2015; }
+.status-misconfigured, .status-expiring_soon { background: #f3e4c4; color: #7a4a1a; } .status-skipped, .status-unknown, .status-not_applicable { background: #f6efe1; color: #937d57; }
+.snippet { border: 1px solid #e3d2a9; border-radius: 4px; margin-top: 5px; overflow: hidden; } .snippet-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #937d57; background: #fffbf3; padding: 3px 8px; border-bottom: 1px solid #e3d2a9; }
 .snippet pre { margin: 0; padding: 7px 8px; font-size: 10px; font-family: ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; }
-ul.refs { margin: 4px 0 0; padding-left: 16px; font-size: 10.5px; } ul.refs a { color: #15803d; }
-footer.doc { margin-top: 26px; padding-top: 10px; border-top: 1px solid #e4e4e7; font-size: 10px; color: #a1a1aa; }
+ul.refs { margin: 4px 0 0; padding-left: 16px; font-size: 10.5px; } ul.refs a { color: #3a4e19; }
+footer.doc { margin-top: 26px; padding-top: 10px; border-top: 1px solid #e3d2a9; font-size: 10px; color: #6b572f; }
 @media print { .no-print { display: none; } }
 </style></head><body>
 <header class="doc"><div><div class="brand">Secure<em>Biz</em></div><div class="doc-type">Passive security assessment</div></div><div class="doc-type">${esc(scanDate)}</div></header>
@@ -125,7 +125,7 @@ footer.doc { margin-top: 26px; padding-top: 10px; border-top: 1px solid #e4e4e7;
     ${counts.medium ? `<span class="count" style="${severityStyle('medium')}">${counts.medium} medium</span>` : ''}
     ${counts.low ? `<span class="count" style="${severityStyle('low')}">${counts.low} low</span>` : ''}
     ${counts.info ? `<span class="count" style="${severityStyle('info')}">${counts.info} info</span>` : ''}
-    ${open.length === 0 ? '<span class="count" style="background:#dcfce7;color:#15803d;">no open findings</span>' : ''}
+    ${open.length === 0 ? '<span class="count" style="background:#e4eacb;color:#3a4e19;">no open findings</span>' : ''}
   </div></div></div>
 ${failedChecks.length > 0 ? `<div class="note warn"><strong>Partial coverage.</strong> ${failedChecks.length} check(s) did not complete: ${esc(failedChecks.map((c) => c.label).join(', '))}. Nothing was inferred from these.</div>` : `<div class="note">All ${scanResult.checks?.length ?? 0} checks completed. Findings below reflect full coverage of the passive checks this tool performs.</div>`}
 <h2 class="section">Findings (${open.length} open${resolved.length > 0 ? `, ${resolved.length} resolved` : ''})</h2>

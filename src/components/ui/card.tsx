@@ -11,7 +11,7 @@ export function Card({ className, variant = 'default', glow, ...props }: CardPro
     <div
       className={cn(
         'rounded-xl transition-all duration-200',
-        variant === 'default' && 'bg-[#0d0d0d] border border-[#242424]',
+        variant === 'default' && 'bg-[#fffbf3] border border-[#e3d2a9]',
         variant === 'cyber' && 'card-cyber',
         variant === 'glass' && 'glass rounded-xl',
         glow && 'cyber-glow',
@@ -29,7 +29,7 @@ export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDiv
 export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn('text-sm font-semibold leading-tight text-[#f5f5f5]', className)}
+      className={cn('text-sm font-semibold leading-tight text-[#2a2013]', className)}
       {...props}
     />
   );
@@ -37,7 +37,7 @@ export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHead
 
 export function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn('text-xs text-[#71717a] mt-0.5', className)} {...props} />
+    <p className={cn('text-xs text-[#937d57] mt-0.5', className)} {...props} />
   );
 }
 

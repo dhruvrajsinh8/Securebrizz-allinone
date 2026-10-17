@@ -37,9 +37,44 @@ function sign(payload: string): string {
   return base64url(createHmac('sha256', getSecret()).update(payload).digest());
 }
 
-export function createSessionToken(userId: string): string {
-  const payload = base64url(JSON.stringify({ uid: userId, exp: Math.floor(Date.now() / 1000) + SESSION_MAX_AGE_SECONDS }));
+/**
+ * `sid` binds the token to a Session row so it can be revoked. Tokens minted
+ * without one stay valid on signature alone (older cookies, and any caller that
+ * has no session row to point at).
+ */
+export function createSessionToken(userId: string, sessionId?: string): string {
+  const payload = base64url(JSON.stringify({
+    uid: userId,
+    sid: sessionId,
+    exp: Math.floor(Date.now() / 1000) + SESSION_MAX_AGE_SECONDS,
+  }));
   return `${payload}.${sign(payload)}`;
+}
+
+export interface SessionClaims {
+  userId: string;
+  sessionId?: string;
+}
+
+/** Signature + expiry only. Revocation is checked separately, against the database. */
+export function verifySessionClaims(token: string | undefined): SessionClaims | null {
+  if (!token) return null;
+  const [payload, signature] = token.split('.');
+  if (!payload || !signature) return null;
+
+  const expected = sign(payload);
+  const a = Buffer.from(signature);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+
+  try {
+    const decoded = JSON.parse(fromBase64url(payload).toString('utf8')) as { uid?: unknown; sid?: unknown; exp?: unknown };
+    if (typeof decoded.uid !== 'string' || typeof decoded.exp !== 'number') return null;
+    if (decoded.exp * 1000 <= Date.now()) return null;
+    return { userId: decoded.uid, sessionId: typeof decoded.sid === 'string' ? decoded.sid : undefined };
+  } catch {
+    return null;
+  }
 }
 
 export function verifySessionToken(token: string | undefined): string | null {

@@ -1,53 +1,67 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
-  Palette: black surfaces, neutral grey structure, exactly two signal colours —
-  green for good, red for bad. Severity is red intensity dropping to neutral
-  grey, never hue-hopping through amber, blue and purple.
+  Warm, paper-like palette: cream surfaces, soft tan structure, olive-green for
+  good and warm brick-red for bad. No neon, no glass/blur, no gradients — the
+  goal is something a non-technical reader can sit with, not a "hacker
+  terminal". Headings use a warm serif (Fraunces) so the app reads as a
+  considered product rather than a default AI-generated dashboard template.
 */
 @theme {
-  --color-background: #000000;
-  --color-surface: #0a0a0a;
-  --color-card: #0d0d0d;
-  --color-raised: #161616;
-  --color-card-foreground: #f5f5f5;
+  --color-background: #f6efe1;
+  --color-surface: #fffbf3;
+  --color-card: #fffbf3;
+  --color-raised: #efe1c4;
+  --color-card-foreground: #2a2013;
 
-  --color-border: #242424;
-  --color-border-strong: #333333;
-  --color-input: #111111;
+  --color-border: #e3d2a9;
+  --color-border-strong: #cbae72;
+  --color-input: #fffbf3;
 
-  --color-foreground: #f5f5f5;
-  --color-muted-foreground: #a1a1aa;
-  --color-subtle: #71717a;
-  --color-faint: #52525b;
+  --color-foreground: #2a2013;
+  --color-muted-foreground: #6b572f;
+  --color-subtle: #937d57;
+  --color-faint: #a6906a;
 
-  --color-primary: #16a34a;
-  --color-primary-hover: #22c55e;
-  --color-primary-foreground: #000000;
-  --color-success: #22c55e;
-  --color-success-text: #4ade80;
+  --color-primary: #6b7f3a;
+  --color-primary-hover: #57652e;
+  --color-primary-foreground: #fffbf3;
+  --color-success: #57652e;
+  --color-success-text: #47601f;
 
-  --color-destructive: #dc2626;
-  --color-destructive-foreground: #ffffff;
-  --color-danger-text: #f87171;
+  --color-destructive: #a8402e;
+  --color-destructive-foreground: #fffbf3;
+  --color-danger-text: #8a3122;
 
-  --color-secondary: #161616;
-  --color-secondary-foreground: #f5f5f5;
-  --color-muted: #161616;
-  --color-accent: #161616;
-  --color-accent-foreground: #f5f5f5;
-  --color-ring: #22c55e;
+  --color-secondary: #efe1c4;
+  --color-secondary-foreground: #2a2013;
+  --color-muted: #efe1c4;
+  --color-accent: #efe1c4;
+  --color-accent-foreground: #2a2013;
+  --color-ring: #7f9548;
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.625rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Override Tailwind's default green/red scales so bg-green-500, text-red-400,
+     etc. (used across auth screens) resolve to the warm palette automatically. */
+  --color-green-300: #a9bd7c;
+  --color-green-400: #8fa85e;
+  --color-green-500: #6b7f3a;
+  --color-green-600: #57652e;
+  --color-green-700: #47601f;
+  --color-red-400: #b4593f;
+  --color-red-500: #a8402e;
+  --color-red-600: #8a3122;
 }
 
 *, *::before, *::after {
@@ -55,7 +69,7 @@
   border-color: var(--color-border);
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; font-size: 17px; }
 
 body {
   background-color: var(--color-background);
@@ -63,26 +77,28 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.55;
+  line-height: 1.6;
 }
+
+.font-display { font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em; }
 
 .tabular { font-variant-numeric: tabular-nums; }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #000000; }
-::-webkit-scrollbar-thumb { background: #242424; border-radius: 0; }
-::-webkit-scrollbar-thumb:hover { background: #333333; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #b3934f; }
 
-::selection { background: rgba(34, 197, 94, 0.28); color: #ffffff; }
+::selection { background: rgba(107, 127, 58, 0.25); color: #2a2013; }
 
-.card-cyber { background: var(--color-card); border: 1px solid var(--color-border); border-radius: 8px; transition: border-color 0.15s ease; }
-.card-cyber:hover { border-color: var(--color-border-strong); }
+.card-cyber { background: var(--color-card); border: 1px solid var(--color-border); border-radius: 12px; box-shadow: 0 1px 2px rgba(42, 32, 19, 0.05); transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.card-cyber:hover { border-color: var(--color-border-strong); box-shadow: 0 2px 8px rgba(42, 32, 19, 0.06); }
 
-.glass { background: rgba(13, 13, 13, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--color-border); }
-.glass-light { background: rgba(13, 13, 13, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--color-border); }
+/* Soft paper card — replaces the old blurred-glass panel look. */
+.glass, .glass-light { background: rgba(255, 251, 243, 0.9); border: 1px solid var(--color-border); }
 
-.cyber-glow { box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35); }
-.cyber-border { border: 1px solid rgba(34, 197, 94, 0.3); }
+.cyber-glow { box-shadow: 0 1px 3px rgba(42, 32, 19, 0.08); }
+.cyber-border { border: 1px solid var(--color-border); }
 
 .text-gradient, .gradient-cyber-text { color: var(--color-foreground); }
 
@@ -97,27 +113,50 @@ body {
 .animate-spin-slow { animation: spin-slow 8s linear infinite; }
 .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
 
-.badge-critical { background: rgba(220, 38, 38, 0.16); color: #fca5a5; border: 1px solid rgba(220, 38, 38, 0.4); }
-.badge-high { background: rgba(220, 38, 38, 0.08); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.25); }
-.badge-medium { background: rgba(161, 161, 170, 0.08); color: #d4d4d8; border: 1px solid rgba(161, 161, 170, 0.22); }
-.badge-low { background: rgba(113, 113, 122, 0.08); color: #a1a1aa; border: 1px solid rgba(113, 113, 122, 0.2); }
-.badge-info { background: rgba(82, 82, 91, 0.08); color: #8b8b93; border: 1px solid rgba(82, 82, 91, 0.2); }
-.badge-pass { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.28); }
+.badge-critical { background: #f1dfcf; color: #7a2a1c; border: 1px solid rgba(168, 64, 46, 0.35); }
+.badge-high { background: #f7eee1; color: #8a3122; border: 1px solid rgba(168, 64, 46, 0.22); }
+.badge-medium { background: #efe1c4; color: #4a3b1f; border: 1px solid var(--color-border-strong); }
+.badge-low { background: #efe1c4; color: #6b572f; border: 1px solid var(--color-border); }
+.badge-info { background: #f6efe1; color: #937d57; border: 1px solid var(--color-border); }
+.badge-pass { background: #e4eacb; color: #47601f; border: 1px solid rgba(107, 127, 58, 0.3); }
 
-.table-row-hover:hover { background: rgba(255, 255, 255, 0.025); }
+.table-row-hover:hover { background: rgba(42, 32, 19, 0.03); }
 
-.sidebar-active { background: rgba(34, 197, 94, 0.08); color: #f5f5f5; box-shadow: inset 2px 0 0 var(--color-success); }
+.sidebar-active { background: #e4eacb; color: #2a2013; box-shadow: inset 3px 0 0 var(--color-success); }
 
-.strength-weak { background: #dc2626; }
-.strength-fair { background: #a1a1aa; }
-.strength-good { background: #16a34a; }
-.strength-strong { background: #22c55e; }
+.strength-weak { background: #a8402e; }
+.strength-fair { background: #a6906a; }
+.strength-good { background: #6b7f3a; }
+.strength-strong { background: #47601f; }
 
-.skeleton { background: linear-gradient(90deg, #0d0d0d 25%, #1a1a1a 50%, #0d0d0d 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 3px; }
+.skeleton { background: linear-gradient(90deg, #efe1c4 25%, #f6efe1 50%, #efe1c4 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
 
-.recharts-tooltip-wrapper { border-radius: 6px !important; overflow: hidden !important; }
+.recharts-tooltip-wrapper { border-radius: 8px !important; overflow: hidden !important; }
 
+/* Removing the UA outline without a replacement leaves keyboard users with no
+   idea where they are. Suppress it only for pointer interaction (:focus), and
+   draw a clear ring whenever focus arrives from the keyboard (:focus-visible). */
 input:focus, textarea:focus, select:focus { outline: none; }
+
+input:focus-visible:focus-visible,
+textarea:focus-visible:focus-visible,
+select:focus-visible:focus-visible {
+  outline: none;
+  border-color: var(--color-ring);
+  box-shadow: 0 0 0 3px rgba(127, 149, 72, 0.35);
+}
+
+/* The repeated :focus-visible raises specificity above Tailwind's
+   `focus:outline-none` utility, which is applied on several of these controls
+   and would otherwise erase the ring for keyboard users. */
+a:focus-visible:focus-visible,
+button:focus-visible:focus-visible,
+[role="switch"]:focus-visible:focus-visible,
+[tabindex]:focus-visible:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
 
 @media print {
   .no-print { display: none !important; }

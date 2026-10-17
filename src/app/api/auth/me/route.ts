@@ -17,6 +17,7 @@ export async function GET() {
         id: user.id, name: user.name, email: user.email, role: user.role, avatar: user.avatar,
         company: user.company, plan: user.plan, createdAt: user.createdAt.toISOString(),
         lastLogin: user.lastLogin ? user.lastLogin.toISOString() : null, twoFactorEnabled: user.twoFactorEnabled, status: user.status,
+        emailVerified: user.emailVerified,
       },
     });
   } catch (error) {

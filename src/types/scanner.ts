@@ -219,6 +219,7 @@ export interface ScanResult {
   subresourceIntegrity?: SubresourceIntegrityInfo;
 
   grade?: 'A+' | 'A' | 'B' | 'C' | 'D' | 'F';
+  phishing?: PhishingAssessment;
   checks?: CheckDiagnostic[];
   dns?: DnsInfo;
   content?: ContentAnalysis;
@@ -226,6 +227,26 @@ export interface ScanResult {
   redirectChain?: string[];
   httpStatus?: number;
   scoreBreakdown?: ScoreComponent[];
+  scanMode?: 'passive' | 'active';
+}
+
+export interface PhishingSignal {
+  label: string;
+  detail: string;
+  risk: 'bad' | 'warning' | 'good';
+}
+
+export interface PhishingAssessment {
+  /** looks_original: no spoofing pattern found. uncertain: some signals, inconclusive. likely_spoofed: strong lookalike/impersonation pattern. */
+  verdict: 'looks_original' | 'uncertain' | 'likely_spoofed';
+  /** 0 = no risk signals, 100 = maximum. Not a probability — a weighted heuristic score. */
+  riskScore: number;
+  headline: string;
+  signals: PhishingSignal[];
+  matchedBrand?: string;
+  matchedBrandKind?: 'exact' | 'lookalike' | 'mentioned';
+  evidence: Evidence[];
+  disclaimer: string;
 }
 
 export interface ScanRecommendation {

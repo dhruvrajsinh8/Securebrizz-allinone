@@ -10,6 +10,7 @@ export interface User {
   lastLogin?: string;
   twoFactorEnabled: boolean;
   status: 'active' | 'inactive' | 'suspended';
+  emailVerified?: boolean;
 }
 
 export interface AuthState {

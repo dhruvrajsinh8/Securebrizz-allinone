@@ -11,50 +11,50 @@ export const SEVERITY_LABEL: Record<Severity, string> = { critical: 'Critical', 
 
 export function severityBadge(severity: Severity | string): string {
   switch (severity) {
-    case 'critical': return 'bg-[#dc2626]/16 text-[#fca5a5] border border-[#dc2626]/40';
-    case 'high': return 'bg-[#dc2626]/8 text-[#f87171] border border-[#dc2626]/25';
-    case 'medium': return 'bg-[#a1a1aa]/8 text-[#d4d4d8] border border-[#a1a1aa]/22';
-    case 'low': return 'bg-[#71717a]/8 text-[#a1a1aa] border border-[#71717a]/20';
-    default: return 'bg-[#52525b]/8 text-[#8b8b93] border border-[#52525b]/20';
+    case 'critical': return 'bg-[#a8402e]/16 text-[#c97f68] border border-[#a8402e]/40';
+    case 'high': return 'bg-[#a8402e]/8 text-[#8a3122] border border-[#a8402e]/25';
+    case 'medium': return 'bg-[#6b572f]/8 text-[#4a3b1f] border border-[#6b572f]/22';
+    case 'low': return 'bg-[#937d57]/8 text-[#6b572f] border border-[#937d57]/20';
+    default: return 'bg-[#a6906a]/8 text-[#937d57] border border-[#a6906a]/20';
   }
 }
 
 export function severityDot(severity: Severity | string): string {
   switch (severity) {
-    case 'critical': return 'bg-[#dc2626]';
-    case 'high': return 'bg-[#f87171]';
-    case 'medium': return 'bg-[#a1a1aa]';
-    case 'low': return 'bg-[#71717a]';
-    default: return 'bg-[#52525b]';
+    case 'critical': return 'bg-[#a8402e]';
+    case 'high': return 'bg-[#8a3122]';
+    case 'medium': return 'bg-[#6b572f]';
+    case 'low': return 'bg-[#937d57]';
+    default: return 'bg-[#a6906a]';
   }
 }
 
 export function severityText(severity: Severity | string): string {
   switch (severity) {
-    case 'critical': return 'text-[#fca5a5]';
-    case 'high': return 'text-[#f87171]';
-    case 'medium': return 'text-[#d4d4d8]';
-    case 'low': return 'text-[#a1a1aa]';
-    default: return 'text-[#8b8b93]';
+    case 'critical': return 'text-[#c97f68]';
+    case 'high': return 'text-[#8a3122]';
+    case 'medium': return 'text-[#4a3b1f]';
+    case 'low': return 'text-[#6b572f]';
+    default: return 'text-[#937d57]';
   }
 }
 
 export function scoreColor(score: number): string {
-  if (score >= 85) return '#22c55e';
-  if (score >= 65) return '#a1a1aa';
-  if (score >= 50) return '#f87171';
-  return '#dc2626';
+  if (score >= 85) return '#7f9548';
+  if (score >= 65) return '#6b572f';
+  if (score >= 50) return '#8a3122';
+  return '#a8402e';
 }
 
 export function gradeBadge(grade?: string): string {
   switch (grade) {
     case 'A+':
-    case 'A': return 'bg-[#22c55e]/12 text-[#4ade80] border border-[#22c55e]/30';
+    case 'A': return 'bg-[#7f9548]/12 text-[#47601f] border border-[#7f9548]/30';
     case 'B':
-    case 'C': return 'bg-[#a1a1aa]/10 text-[#d4d4d8] border border-[#a1a1aa]/25';
-    case 'D': return 'bg-[#dc2626]/10 text-[#f87171] border border-[#dc2626]/25';
-    case 'F': return 'bg-[#dc2626]/16 text-[#fca5a5] border border-[#dc2626]/40';
-    default: return 'bg-[#52525b]/10 text-[#a1a1aa] border border-[#52525b]/25';
+    case 'C': return 'bg-[#6b572f]/10 text-[#4a3b1f] border border-[#6b572f]/25';
+    case 'D': return 'bg-[#a8402e]/10 text-[#8a3122] border border-[#a8402e]/25';
+    case 'F': return 'bg-[#a8402e]/16 text-[#c97f68] border border-[#a8402e]/40';
+    default: return 'bg-[#a6906a]/10 text-[#6b572f] border border-[#a6906a]/25';
   }
 }
 
@@ -62,13 +62,13 @@ export function statusBadge(status: string): string {
   switch (status) {
     case 'present':
     case 'ok':
-    case 'valid': return 'bg-[#22c55e]/12 text-[#4ade80] border border-[#22c55e]/30';
+    case 'valid': return 'bg-[#7f9548]/12 text-[#47601f] border border-[#7f9548]/30';
     case 'missing':
     case 'failed':
     case 'expired':
-    case 'invalid': return 'bg-[#dc2626]/12 text-[#f87171] border border-[#dc2626]/30';
+    case 'invalid': return 'bg-[#a8402e]/12 text-[#8a3122] border border-[#a8402e]/30';
     case 'misconfigured':
-    case 'expiring_soon': return 'bg-[#dc2626]/8 text-[#fca5a5] border border-[#dc2626]/22';
-    default: return 'bg-[#71717a]/10 text-[#a1a1aa] border border-[#71717a]/25';
+    case 'expiring_soon': return 'bg-[#a8402e]/8 text-[#c97f68] border border-[#a8402e]/22';
+    default: return 'bg-[#937d57]/10 text-[#6b572f] border border-[#937d57]/25';
   }
 }

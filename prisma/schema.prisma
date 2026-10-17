@@ -24,9 +24,13 @@ model User {
   lastLogin        DateTime?
   twoFactorEnabled Boolean   @default(false)
   status           String    @default("active")
+  emailVerified    Boolean   @default(false)
   sessions         Session[]
 }
 
+/// One row per signed-in device. The session cookie carries this row's id, so
+/// deleting a row revokes that device immediately — without it, "sign out this
+/// device" would be cosmetic while the signed token stayed valid.
 model Session {
   id         String   @id @default(uuid())
   device     String
@@ -34,9 +38,15 @@ model Session {
   location   String
   ip         String
   lastActive DateTime @default(now())
+  /// Defaulted so the column could be added to existing rows; every session
+  /// created from now on sets it explicitly. Pre-existing rows therefore read
+  /// as already expired, which is correct — they were never bound to a token.
+  expiresAt  DateTime @default(now())
   isCurrent  Boolean  @default(false)
   userId     String
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, lastActive])
 }
 
 // Vulnerabilities are created from real scan findings, scoped per user.
@@ -111,6 +121,7 @@ model ScanResult {
   scoreBreakdown       String?
   emailSecurity        String?
   subresourceIntegrity String?
+  phishing             String?
   userId               String?
 
   @@index([userId, scanDate])
@@ -129,6 +140,20 @@ model ScanAudit {
   @@index([ip, createdAt])
 }
 
+/// Failed and successful sign-in attempts, used to throttle credential guessing.
+/// Rows are keyed by both email and IP so one attacker cannot lock out a victim
+/// by burning their email quota from many addresses, and vice versa.
+model AuthAttempt {
+  id        String   @id @default(uuid())
+  email     String
+  ip        String
+  success   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
+  @@index([ip, createdAt])
+}
+
 model Notification {
   id        String   @id @default(uuid())
   title     String
@@ -136,4 +161,29 @@ model Notification {
   type      String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+/// One-time token emailed to verify a new account's email address.
+model EmailVerifyToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   // stored as SHA-256 hex of the raw token
+  expiresAt DateTime
+  used      Boolean  @default(false)
+
+  @@index([userId])
+  @@index([token])
+}
+
+/// One-time token emailed for password reset. Keyed on email so it
+/// survives if the user changes their email before using it.
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   // stored as SHA-256 hex of the raw token
+  expiresAt DateTime
+  used      Boolean  @default(false)
+
+  @@index([email])
+  @@index([token])
 }

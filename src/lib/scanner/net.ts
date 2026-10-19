@@ -10,11 +10,19 @@
 import dns from 'dns/promises';
 import { URL } from 'url';
 
+/**
+ * For a security scanner, we must be able to probe hosts that have invalid, self-signed,
+ * or expired certificates to analyze and report them rather than aborting the scan.
+ */
+if (process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '1') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 /** Local scanning is an SSRF vector in a deployed app, so it is opt-in. */
 export const ALLOW_LOCAL_SCAN = process.env.ALLOW_LOCAL_SCAN === 'true';
 
-export const DEFAULT_TIMEOUT_MS = 8000;
-export const LOCAL_TIMEOUT_MS = 3000;
+export const DEFAULT_TIMEOUT_MS = 15000;
+export const LOCAL_TIMEOUT_MS = 10000;
 const MAX_REDIRECTS = 5;
 
 export const SCANNER_USER_AGENT =

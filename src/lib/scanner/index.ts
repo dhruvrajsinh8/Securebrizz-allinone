@@ -205,10 +205,19 @@ function buildCandidates(parsedUrl: URL, schemeGiven: boolean, isLocal: boolean)
     return [`http://${host}:3000`, `http://${host}:8000`, `http://${host}:8080`, `http://${host}`, `https://${host}`];
   }
   const primary = parsedUrl.toString();
-  if (schemeGiven) return [primary];
-  const fallback = new URL(primary);
-  fallback.protocol = 'http:';
-  return [primary, fallback.toString()];
+  const list = [primary];
+
+  const fallbackHttp = new URL(primary);
+  fallbackHttp.protocol = 'http:';
+  const fallbackHttpStr = fallbackHttp.toString();
+  if (!list.includes(fallbackHttpStr)) list.push(fallbackHttpStr);
+
+  const host = parsedUrl.hostname;
+  if (!isLocal && !host.startsWith('www.') && !/^(\d{1,3}\.){3}\d{1,3}$/.test(host)) {
+    list.push(`https://www.${host}/`, `http://www.${host}/`);
+  }
+
+  return schemeGiven ? [primary, fallbackHttpStr] : list;
 }
 
 function errorResult(url: string, hostname: string, status: 'invalid_domain' | 'unreachable' | 'blocked', errorMessage: string, started: number, checks: CheckDiagnostic[]): ScanResult {
